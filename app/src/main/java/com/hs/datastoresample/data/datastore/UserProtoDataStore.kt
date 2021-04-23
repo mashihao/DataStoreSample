@@ -6,6 +6,7 @@ import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.Serializer
 import androidx.datastore.createDataStore
+import com.google.protobuf.ByteString
 import com.google.protobuf.InvalidProtocolBufferException
 import com.hs.datastoresample.datasotre.User
 import kotlinx.coroutines.flow.Flow
@@ -47,7 +48,6 @@ class UserProtoDataStore(context: Context)  {
 
      suspend fun setUsername(name: String) {
         dataStore.updateData {
-            Log.e("MSH","setUsername")
             it.toBuilder()
                 .setUsername(name)
                 .build()
@@ -64,19 +64,15 @@ class UserProtoDataStore(context: Context)  {
      suspend fun setPassword(password: String) {
         dataStore.updateData {
             it.toBuilder()
-                .setPassword(password)
+                .setPassword(ByteString.copyFromUtf8(password))
                 .build()
         }
     }
 
-    fun getPassword(): Flow<String?> {
-        return dataStore.data.map {
-            it.password
-        }
-    }
 
     fun getAll(): Flow<String?> {
         return dataStore.data.map {
+            Log.e("MSH","${it.toString()}")
             it.toString()
         }
     }
